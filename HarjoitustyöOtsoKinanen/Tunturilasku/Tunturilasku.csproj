@@ -8,9 +8,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Jypeli.NET" Version="11.*" />
-        <PackageReference Include="Jypeli.FarseerPhysics.NET" Version="2.*" />
+        <PackageReference Include="Jypeli.NET" Version="11.1.2" />
+        <PackageReference Include="Jypeli.FarseerPhysics.NET" Version="2.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="content\hahmo.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="content\hahmo_jarru.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="content\hahmo_oikea.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="content\hahmo_vasen.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="content\Tunturilasku_tausta.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>
 
