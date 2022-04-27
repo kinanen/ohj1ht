@@ -11,38 +11,31 @@ using Jypeli.Widgets;
 ///
 /// <summary>
 /// Laskettelupeli jossa ohjataan hiirellä, oikeaa nappia käyttäen hahmoa laskettelurinnettä turvallisesti alaspäin. Pelissä esteinä puita, kiviä ja ilves.
-/// Osumista puihin menettää yhden "Health"in, osuma ilveksen kanssa tappaa kerrasta.
+/// Osumista puihin menettää yhden elkun, osuma ilveksen kanssa tappaa kerrasta.
 /// Osumalaskurin arvo palautuu pelin edetessä hitaasti alkuarvoonsa
 ///
 /// </summary>
 
 public class Tunturilasku : PhysicsGame
 {
+    int elama = 3; // lukuarvo joka on pelattavan hahmon elämä(t) pelin alussa.
+    const int maksimiElamat = 3; // pelaajan maksimi elämä arvo.
 
-
-
-    int health = 3; // lukuarvo joka on pelattavan hahmon elämä(t) pelin alussa.
-    int maxHealth = 3; // pelaajan maksimi health arvo.
-
-    double nopeus = 1;//double-arvo "nopeus", joka määrittää kuinka nopeasti esteet tulevat rintessä vastaan.
+    double nopeus = 1;//double-arvo "nopeus", joka määrittää kuinka nopeasti esteet tulevat rintessä vastaan. Aliohjelma Esteet muuttaa nopeus arvoa suuremmaksi pelin edetessä
     
-    double esteNopeus = 0.25;//lukuarvo "esteNopeus" joka määrittää kuinka tiheästi pelin alkaessa esteitä luodaan kentälle. 
-
-    DoubleMeter healthleft; // palkki joka kuvaa jäljellä olevaa "healthleft" / "health" int luvun arvoa pelaajalle.
+    DoubleMeter elamiaJaljella; // palkki joka kuvaa jäljellä olevaa elämiä int luvun arvoa pelaajalle.
 
     /// <summary>
     ///Ohjelman Begin, jossa määrätään pelin ikkunan ja kentän koko, lisätään rajat kenttään, joita pelaaja ei voi ylittää.
     ///Kutsutana taustakuva, pelin esteet, viholliset ja itse pelattava hahmo, sekä kutsutaan "Ohjaus" metodia, joka hoitaa hahmon liikuttamisen 
-    ///lisätään törmäyskäsittelijä ja pelaajan "health" arvoa parantava "paraneminen"
+    ///lisätään törmäyskäsittelijä ja pelaajan elama arvoa parantava "paraneminen"
     ///Käynnistetään ja lopetetaan kaikki pelin tapahtumat "kuolemaan" ja annetaan pelaajalle pisteet.
     /// </summary>
     public override void Begin()
     {
-
-
         LuoKentta();
 
-        LuoHealthLeft(); // kutsutaan aliohjelmaa joka luo elämäpalkin
+        LuoElamiaJaljella(); // kutsutaan aliohjelmaa joka luo elämäpalkin
         
         PhysicsObject hahmo = LisaaHahmo(this); // kutsutaan aliohjelmaa, joka palauttaa PhysicsObject:in joka toimii pelattavana hahmona argumettina peli johon hahmo lisätään.
 
@@ -56,11 +49,11 @@ public class Tunturilasku : PhysicsGame
 
         //Esteet(this, nopeus); // kutsutaan aliohjelmaa joka lisää peliin maasto esteet, argumentteina, pelin nopeus ja peli johon esteet lisätään.
 
-        AddCollisionHandler(hahmo, Tormays); // törmäyskäsittelijä joka pienentää pelaajan "health" arvoa sekä ylläpitää "healthBar"ia
+        AddCollisionHandler(hahmo, Tormays); // törmäyskäsittelijä joka pienentää pelaajan elama arvoa sekä ylläpitää elamaPalkkia
 
         Pisteet();
 
-        Paraneminen(); // parantaa ajastimella pelaajna "health" arvoa mikäli se on laskenut
+        Paraneminen(); // parantaa ajastimella pelaajna elämät arvoa mikäli se on laskenut
 
         
 
@@ -71,7 +64,6 @@ public class Tunturilasku : PhysicsGame
     ///<summary>Luodaan peliin kenttä, lisätään taustakuva ja määrätään sen koko</summary>
     private void LuoKentta()
     {
-
         Level.Size = new Vector(2000, 1400); //määrätään peli alueen koko
         Level.Background.Image = LoadImage("Tunturilasku_tausta1"); // lisätään peliin taustakuva
         Level.CreateBorders(); //  luodaan kenttään laidat
@@ -91,8 +83,6 @@ public class Tunturilasku : PhysicsGame
     /// <returns></returns>
     private void Ohjaus(Game peli, PhysicsObject hahmo)
     {
-
-
         Image hahmonKuva = LoadImage("hahmo");
         Image hahmoVasenKuva = LoadImage("hahmo_vasen");
         Image hahmoOikeaKuva = LoadImage("hahmo_oikea");
@@ -110,10 +100,9 @@ public class Tunturilasku : PhysicsGame
 
         }
 
-
         double[] nopeusTaulukko = new double[] { 150, 50, 30 }; // taulukko jossa on kerroin arvo jota käytetään pelaajan liikuttamiseen
 
-        double nopeus = nopeusTaulukko[health - 1]; // määrittää pelaajan liikkeen herkkyyttä/nopeutta perustuen "nopeusTaulukko" arvoihin ja pelaajan "health" arvoon, käytetään pelaajan liike vectorin kertoimena
+        double nopeus = nopeusTaulukko[elama - 1]; // määrittää pelaajan liikkeen herkkyyttä/nopeutta perustuen "nopeusTaulukko" arvoihin ja pelaajan "elama" arvoon, käytetään pelaajan liike vectorin kertoimena
 
         peli.Mouse.Listen(MouseButton.Left, ButtonState.Down, delegate ()// hiiren kuuntelija joka ottaa huomioon hiiren ja pelaajan sijainnin, Mitä kauempana pelaajasta hiiren nappia painetaan, sitä voimakkaampi on liike siihen suuntaan. 
         {
@@ -147,20 +136,18 @@ public class Tunturilasku : PhysicsGame
         peli.Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "Pelaajaa liikutetaan oikealle", new Vector(0, 6000), hahmoJarruKuva);
         peli.Keyboard.Listen(Key.Down, ButtonState.Down, LiikutaPelaajaa, "Pelaajaa liikutetaan oikealle", new Vector(0, -6000), hahmonKuva);
 
-
     }
 
     ///<summary>Lisää peliin näkyvän sekuntikellon joka mittaa suorituksen kestoa.</summary>
     private void Pisteet()
     {
-        
         Timer pistelaskuri = new Timer(); //luodaan ajastin "pistelaskuri"
         pistelaskuri.Start();
 
         pistelaskuri.Interval = 0.01;
         pistelaskuri.Timeout += delegate ()
         {
-            if (health < 1)
+            if (elama < 1)
             {
                 pistelaskuri.Stop();
             };
@@ -177,7 +164,6 @@ public class Tunturilasku : PhysicsGame
         pistenaytto.BindTo(pistelaskuri.SecondCounter);
         Add(pistenaytto);
 
-
     }
 
 
@@ -189,8 +175,6 @@ public class Tunturilasku : PhysicsGame
     /// <returns> PhysicsObject "hahmo", joka toimii pelissä pelaajan hahmona </returns>
     private PhysicsObject LisaaHahmo(Game peli)
     {
-
-
         double pelaajaW = 75; // pelaaja leveys
         double pelaajaH = 150; // pelaaja korkeus
         Image kHahmo = LoadImage("hahmo"); // pelaajan kuva
@@ -200,85 +184,80 @@ public class Tunturilasku : PhysicsGame
         hahmo.Mass = 15; // pelaajan massa, joka vaikuttaa sen liikkeeseen ja törmäyksen käsittlyyn 
         peli.Add(hahmo); // lisätään pelaaja peliin
         hahmo.LinearDamping = 0.999;
-
         return hahmo;
 
-
     }
 
     /// <summary>
-    /// Luodaan healthBar, sekä määritetään sen ulkonäkö
+    /// Luodaan elamaPalkki, sekä määritetään sen ulkonäkö
     /// </summary>
-    void LuoHealthLeft()
+    void LuoElamiaJaljella()
     {
+        elamiaJaljella = new DoubleMeter(elama); // elama arvon mukainen elamaPalkkiin aloitus arvo
+        elamiaJaljella.MaxValue = maksimiElamat;    //pelaajan maksimi elama healtPalkkiissa
+        elamiaJaljella.LowerLimit += KuolemaPalkki; // käsittelijä sille tilanteelle jossa pelaajan elama on laskenut nollaan, kutsutaan KuolemaPalkki aliohjelmaa
 
+        ProgressBar elamaPalkki = new ProgressBar(500, 10); // määrätään elamaPalkkiin koko 
+        elamaPalkki.BarColor = Color.Aquamarine; // määrätään elamaPalkkiin väri
 
-        healthleft = new DoubleMeter(health); // health arvon mukainen healthbarin aloitus arvo
-        healthleft.MaxValue = maxHealth;    //pelaajan maksimi health healtbarissa
-        healthleft.LowerLimit += KuolemaBar; // käsittelijä sille tilanteelle jossa pelaajan health on laskenut nollaan, kutsutaan KuolemaBar aliohjelmaa
+        elamaPalkki.X = Screen.Right - 260; // määrätään elamaPalkkiin sijainti ruudulla
+        elamaPalkki.Y = Screen.Top - 20;
+        elamaPalkki.BindTo(elamiaJaljella); // linkittää näkyvän palkin arvon elamaleft arvoon. 
+        Add(elamaPalkki); // lisää elamaPalkkiin ruutuun
 
-        ProgressBar healthBar = new ProgressBar(500, 10); // määrätään healthBarin koko 
-        healthBar.BarColor = Color.Aquamarine; // määrätään healthBarin väri
-
-        healthBar.X = Screen.Right - 260; // määrätään healthBarin sijainti ruudulla
-        healthBar.Y = Screen.Top - 20;
-        healthBar.BindTo(healthleft); // linkittää näkyvän palkin arvon healthleft arvoon. 
-        Add(healthBar); // lisää healthBarin ruutuun
     }
 
+
     /// <summary>
-    /// Näyttää pelaajalle healthBarin paikalla tekstin, mikäli pelaaja menettää kaikki health pisteensä
+    /// Näyttää pelaajalle elamaPalkkiin paikalla tekstin, mikäli pelaaja menettää kaikki elama pisteensä
     /// </summary>
-    private void KuolemaBar()
+    private void KuolemaPalkki()
     {
-
-
         MessageDisplay.Add("Humps ja Tumps, laskijasi menehtyi");
+
     }
 
     /// <summary>
-    /// Aliohjelma ylläpitää ajastinta joka palauttaa pelaajan menetettyjä health arvoja, ja kutsuu itseään niin kauan kun arvo on alle 3
+    /// Aliohjelma ylläpitää ajastinta joka palauttaa pelaajan menetettyjä elama arvoja, ja kutsuu itseään niin kauan kun arvo on alle 3
     /// </summary>
     private void Paraneminen()
     {
         Timer.CreateAndStart(10, Paraneminen);
 
-        if (health < maxHealth)
+        if (elama < maksimiElamat)
         {
-            health++;
-            healthleft.Value++;
+            elama++;
+            elamiaJaljella.Value++;
             
         }
     
-
     }
 
 
+    /// <summary>
+    /// Törmäyskäsittelijä joka vähentää osuman kohteen mukaan pelaajan elamaia, ja sen muuttuessa nollaan tuhoaa pelaajan. 
+    /// </summary>
+    /// <param name="hahmo"> pelaajan hahmo </param>
+    /// <param name="kohde"> törmäyksen kohde </param>
     void Tormays(PhysicsObject pelaaja, PhysicsObject kohde)
     {
-        /// <summary>
-        /// Törmäyskäsittelijä joka vähentää osuman kohteen mukaan pelaajan healthia, ja sen muuttuessa nollaan tuhoaa pelaajan. 
-        /// </summary>
-        /// <param name="hahmo"> pelaajan hahmo </param>
-        /// <param name="kohde"> törmäyksen kohde </param>
-
         if (kohde.Tag == "ilves") // tarkistaa onko törmäyksen kohteella Tag ilves
         {
             pelaaja.Destroy(); // tuhoaa pelaajan kerta osumasta
-            health = 0;
-            healthleft.Value = 0; // muuttaa healthBarin arvon
+            elama = 0;
+            elamiaJaljella.Value = 0; // muuttaa elamaPalkkiin arvon
         }
         else // käsittelee törmäyksen jossa osapuolena ei ole ilves, vaan joku muu este tai kentän raja.
         {
-            health--;
-            healthleft.Value--;
+            elama--;
+            elamiaJaljella.Value--;
         }
         
         kohde.Destroy();
-        if(health <= 0)
+        if(elama <= 0)
         {
             pelaaja.Destroy();
-            healthleft.Value = 0;
+            elamiaJaljella.Value = 0;
                         
         }
         
@@ -292,13 +271,14 @@ public class Tunturilasku : PhysicsGame
     /// <param name="nopeus"> double nopeus, joka välitetään edelleen kutsuttavalle sekä jonka arvoa lisätään ajastimen Timeout:issa  </param>
     private void Esteet(Game peli, double nopeus)
     {
-
+        double esteNopeus = 0.25; //lukuarvo "esteNopeus" joka määrittää kuinka tiheästi pelin alkaessa esteitä luodaan kentälle. 
         Timer ajastin = new Timer(); 
         ajastin.Interval = esteNopeus;
 
         ajastin.Timeout += delegate () { int rnd = RandomGen.NextInt(0, 4); LuoEsteet(peli, rnd, nopeus); esteNopeus=esteNopeus * 0.95; nopeus = nopeus * 1.005; };
         ajastin.Start();
-        if(health < 1) { ajastin.Stop(); }
+        if(elama < 1) { ajastin.Stop(); }
+
     }
 
 
@@ -354,7 +334,6 @@ public class Tunturilasku : PhysicsGame
     /// <param name="peli"> Tuodaan parametrinä Game johon GameObject lisätään </param>
     private static void Ilves (Game peli)
     {
- 
         double a = 10;
         Timer ajastin = new Timer();
         ajastin.Interval = a;
@@ -372,37 +351,33 @@ public class Tunturilasku : PhysicsGame
     private static void LuoIlves(Game peli)
     {
         int suunta = RandomGen.NextInt(0, 2);//random gen joka arpoo kummalle puolelle ilves tulee
+        PhysicsObject ilves = new PhysicsObject(100, 50);
+        ilves.Tag = "ilves";
+        Vector d = new(0, RandomGen.NextDouble(-450, 450));
+        ilves.Y = RandomGen.NextInt(-450, 450);
 
         if (suunta == 0) //luodaan ilves, mikäli arvo on nolla, jolloin etenemissuunta on vasemmalta oikealle
         {
-            int x = -800;
+            ilves.X = -800;
             Image kIlvesvo = LoadImage("ilvesvo");
             Shape mIlves = Shape.FromImage(kIlvesvo);
-            PhysicsObject ilves = new PhysicsObject(100, 50, mIlves);
+            ilves.Shape = mIlves;
             ilves.Image = (kIlvesvo);
-            ilves.X = x;
-            ilves.Y = RandomGen.NextInt(-450, 450);
-            ilves.Tag = "ilves";
-            peli.Add(ilves);
-            Vector d = new Vector(800.00, RandomGen.NextDouble(-450, 450));
-            ilves.MoveTo(d, 1000, ilves.Destroy);
+            d.X = 800.00;
             
         }
         else // luodaan ilves, mikäli suunta arvo on 1, jolloin ilveksen etenemissuunta on oikealta vasemmaelle.
         {
-            int x = 800;
+            ilves.X = 800;
             Image kIlvesov = LoadImage("ilvesov");
             Shape mIlves = Shape.FromImage(kIlvesov);
-            PhysicsObject ilves = new PhysicsObject(100, 50, mIlves);
+            ilves.Shape = mIlves;
             ilves.Image = (kIlvesov);
-            ilves.X = x;
-            ilves.Y = RandomGen.NextInt(-450, 450);
-            peli.Add(ilves);
-            Vector d = new Vector(-800.00, RandomGen.NextDouble(-450, 450));
-            ilves.MoveTo(d, 1000, ilves.Destroy);
-            
+            d.X = -800.00;
         }
 
+        ilves.MoveTo(d, 1000, ilves.Destroy);
+        peli.Add(ilves);
     }
 
 }
