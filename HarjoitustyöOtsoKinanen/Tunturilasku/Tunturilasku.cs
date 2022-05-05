@@ -18,12 +18,25 @@ using Jypeli.Widgets;
 
 public class Tunturilasku : PhysicsGame
 {
-    int elama = 3; // lukuarvo joka on pelattavan hahmon elämä(t) pelin alussa.
-    const int maksimiElamat = 3; // pelaajan maksimi elämä arvo.
+    /// <summary>
+    /// lukuarvo joka on pelattavan hahmon elämä(t) pelin alussa.
+    /// </summary>
+    private int elama = 3;
 
-    double nopeus = 1;//double-arvo "nopeus", joka määrittää kuinka nopeasti esteet tulevat rintessä vastaan. Aliohjelma Esteet muuttaa nopeus arvoa suuremmaksi pelin edetessä
-    
-    DoubleMeter elamiaJaljella; // palkki joka kuvaa jäljellä olevaa elämiä int luvun arvoa pelaajalle.
+    /// <summary>
+    /// pelaajan maksimi elämä arvo.
+    /// </summary>
+    private const int MAKSIMIELAMAT = 3;
+
+    /// <summary>
+    /// double-arvo "nopeus", joka määrittää kuinka nopeasti esteet tulevat rintessä vastaan. Aliohjelma Esteet muuttaa nopeus arvoa suuremmaksi pelin edetessä
+    /// </summary>
+    private double nopeus = 1;
+
+    /// <summary>
+    /// palkki joka kuvaa jäljellä olevaa elämiä int luvun arvoa pelaajalle.
+    /// </summary>
+    private DoubleMeter elamiaJaljella; // palkki joka kuvaa jäljellä olevaa elämiä int luvun arvoa pelaajalle.
 
     /// <summary>
     ///Ohjelman Begin, jossa määrätään pelin ikkunan ja kentän koko, lisätään rajat kenttään, joita pelaaja ei voi ylittää.
@@ -31,6 +44,8 @@ public class Tunturilasku : PhysicsGame
     ///lisätään törmäyskäsittelijä ja pelaajan elama arvoa parantava "paraneminen"
     ///Käynnistetään ja lopetetaan kaikki pelin tapahtumat "kuolemaan" ja annetaan pelaajalle pisteet.
     /// </summary>
+
+
     public override void Begin()
     {
         LuoKentta();
@@ -60,6 +75,7 @@ public class Tunturilasku : PhysicsGame
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
+
 
     ///<summary>Luodaan peliin kenttä, lisätään taustakuva ja määrätään sen koko</summary>
     private void LuoKentta()
@@ -138,6 +154,7 @@ public class Tunturilasku : PhysicsGame
 
     }
 
+
     ///<summary>Lisää peliin näkyvän sekuntikellon joka mittaa suorituksen kestoa.</summary>
     private void Pisteet()
     {
@@ -188,13 +205,14 @@ public class Tunturilasku : PhysicsGame
 
     }
 
+
     /// <summary>
     /// Luodaan elamaPalkki, sekä määritetään sen ulkonäkö
     /// </summary>
-    void LuoElamiaJaljella()
+    private void LuoElamiaJaljella()
     {
         elamiaJaljella = new DoubleMeter(elama); // elama arvon mukainen elamaPalkkiin aloitus arvo
-        elamiaJaljella.MaxValue = maksimiElamat;    //pelaajan maksimi elama healtPalkkiissa
+        elamiaJaljella.MaxValue = MAKSIMIELAMAT;    //pelaajan maksimi elama healtPalkkiissa
         elamiaJaljella.LowerLimit += KuolemaPalkki; // käsittelijä sille tilanteelle jossa pelaajan elama on laskenut nollaan, kutsutaan KuolemaPalkki aliohjelmaa
 
         ProgressBar elamaPalkki = new ProgressBar(500, 10); // määrätään elamaPalkkiin koko 
@@ -217,6 +235,7 @@ public class Tunturilasku : PhysicsGame
 
     }
 
+
     /// <summary>
     /// Aliohjelma ylläpitää ajastinta joka palauttaa pelaajan menetettyjä elama arvoja, ja kutsuu itseään niin kauan kun arvo on alle 3
     /// </summary>
@@ -224,7 +243,7 @@ public class Tunturilasku : PhysicsGame
     {
         Timer.CreateAndStart(10, Paraneminen);
 
-        if (elama < maksimiElamat)
+        if (elama < MAKSIMIELAMAT)
         {
             elama++;
             elamiaJaljella.Value++;
@@ -239,9 +258,9 @@ public class Tunturilasku : PhysicsGame
     /// </summary>
     /// <param name="hahmo"> pelaajan hahmo </param>
     /// <param name="kohde"> törmäyksen kohde </param>
-    void Tormays(PhysicsObject pelaaja, PhysicsObject kohde)
+    private void Tormays(PhysicsObject pelaaja, PhysicsObject kohde)
     {
-        if (kohde.Tag == "ilves") // tarkistaa onko törmäyksen kohteella Tag ilves
+        if (kohde.Tag == "ilves") // tarkistaa onko törmäyksen kohteella Tag "ilves"
         {
             pelaaja.Destroy(); // tuhoaa pelaajan kerta osumasta
             elama = 0;
@@ -379,6 +398,7 @@ public class Tunturilasku : PhysicsGame
         ilves.MoveTo(d, 1000, ilves.Destroy);
         peli.Add(ilves);
     }
+
 
 }
 
