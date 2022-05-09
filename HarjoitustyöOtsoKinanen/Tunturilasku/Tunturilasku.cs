@@ -15,6 +15,14 @@ using Jypeli.Widgets;
 /// Osumalaskurin arvo palautuu pelin edetessä hitaasti alkuarvoonsa
 ///
 /// </summary>
+// LINKKI DEMO 7 Tehtäviin joissa Taulukko, Silmukka ja Toisto demoja. 
+// 1. https://tim.jyu.fi/view/kurssit/tie/ohj1/2022k/demot/demo7#d3teht6a
+// 2. https://tim.jyu.fi/view/kurssit/tie/ohj1/2022k/demot/demo7#d7t1
+// 3. https://tim.jyu.fi/view/kurssit/tie/ohj1/2022k/demot/demo7#pituuksienKa
+// 4.-5. https://tim.jyu.fi/view/kurssit/tie/ohj1/2022k/demot/demo7#d7teht4
+// 6. https://tim.jyu.fi/view/kurssit/tie/ohj1/2022k/demot/demo7#d7teht5
+
+
 
 public class Tunturilasku : PhysicsGame
 {
