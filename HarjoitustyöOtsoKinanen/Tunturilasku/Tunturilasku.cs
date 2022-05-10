@@ -16,10 +16,10 @@ using Jypeli.Widgets;
 ///
 /// </summary>
 // LINKKI DEMO 7 Tehtäviin joissa Taulukko, Silmukka ja Toisto demoja. 
-// 1. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=7&task=d3teht6a&user=kinanojz taulukko, ja sille "for each" toistorakenne
-// 2. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=10&task=d7t1&user=kinanojz for toistorakenne
-// 3. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=4&task=pituuksienKa&user=kinanojz for toistorakenne koko taulukolle ja toinen sen määrätyille alkioille
-// 4.-5. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=2&task=d7teht4&user=kinanojz for toistorakenne taulukolle josta etsitään minimi etäisyys
+// 1. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=7&task=d3teht6a&user=kinanojz taulukko, ja sille "for each" toistorakenne, funktio joka palauttaa laskettujen kirjainten määrän.
+// 2. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=10&task=d7t1&user=kinanojz for toistorakenne, palauttaa string muuttujan jossa määrätyn lainen ascii grafiikka. 
+// 3. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=4&task=pituuksienKa&user=kinanojz for toistorakenne koko taulukolle ja toinen sen määrätyille alkioille, funktio palauttaa sanojen pituus keskiarvon
+// 4.-5. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=2&task=d7teht4&user=kinanojz for toistorakenne taulukolle josta etsitään minimi etäisyys, funktio joka palauttaa lähimmän objektin.
 // 6. https://tim.jyu.fi/answers/kurssit/tie/ohj1/2022k/demot/demo7?answerNumber=1&task=d7teht5&user=kinanojz 
 
 
